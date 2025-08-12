@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  weathermcp-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: weathermcp-dev
+    ports:
+      - "5175:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      # MeteoChile API Configuration
+      - MeteoChile__BaseUrl=https://climatologia.meteochile.gob.cl/application/servicios/json/
+      - MeteoChile__TimeoutSeconds=60
+      # MCP Server Configuration  
+      - McpServer__Name=meteochile-mcp-server-dev
+      - McpServer__Version=1.0.0
+      - McpServer__ProtocolVersion=2024-11-05
+      # Development Logging
+      - Logging__LogLevel__Default=Debug
+      - Logging__LogLevel__Microsoft.AspNetCore=Information
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - weathermcp-dev-network
+
+networks:
+  weathermcp-dev-network:
+    driver: bridge

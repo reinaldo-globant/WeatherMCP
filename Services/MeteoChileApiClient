@@ -1,0 +1,204 @@
+using System;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+
+namespace MeteoChileMcpServer
+{
+   
+
+    public class MeteoChileApiClient : IMeteoChileApiClient
+    {
+        private readonly HttpClient _httpClient;
+        private readonly ILogger<MeteoChileApiClient> _logger;
+        private const string BaseUrl = "https://climatologia.meteochile.gob.cl/application";
+
+        public MeteoChileApiClient(HttpClient httpClient, ILogger<MeteoChileApiClient> logger)
+        {
+            _httpClient = httpClient;
+            _logger = logger;
+
+            // Configurar headers comunes
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "MeteoChile-MCP-Server/1.0");
+        }
+
+        // 01 - Catastro de Estaciones Meteorológicas
+        public async Task<object> GetWeatherStationsAsync()
+        {
+            var url = $"{BaseUrl}/productos/getEstacionesJson";
+            return await MakeRequestAsync(url, "Catastro de estaciones meteorológicas");
+        }
+
+        // 02 - Metadata de la Estación
+        public async Task<object> GetStationMetadataAsync(string stationCode)
+        {
+            var url = $"{BaseUrl}/productos/getMetadataEstacionJson/{stationCode}";
+            return await MakeRequestAsync(url, $"Metadata de la estación {stationCode}");
+        }
+
+        // 03 - Datos 12 Horas Red de Estaciones Automáticas
+        public async Task<object> GetRecentDataAllStationsAsync()
+        {
+            var url = $"{BaseUrl}/productos/getDatos12HorasRecentesEmasJson";
+            return await MakeRequestAsync(url, "Datos recientes de todas las estaciones");
+        }
+
+        // 04 - Datos 12 Horas de una Estación Automática
+        public async Task<object> GetStationRecentDataAsync(string stationCode)
+        {
+            var url = $"{BaseUrl}/productos/getDatos12HorasRecentesEmaJson/{stationCode}";
+            return await MakeRequestAsync(url, $"Datos recientes de la estación {stationCode}");
+        }
+
+        // 05 - Datos Mensuales cada 15 Minutos de una Estación Automática
+        public async Task<object> GetStationMonthlyDataAsync(string stationCode, int year, int month)
+        {
+            var url = $"{BaseUrl}/productos/getDatosMensualesEmaJson/{stationCode}/{year}/{month:D2}";
+            return await MakeRequestAsync(url, $"Datos mensuales de la estación {stationCode} para {month}/{year}");
+        }
+
+        // 06 - Datos Recientes Índice Radiación Ultravioleta Red Nacional
+        public async Task<object> GetUvIndexDataAsync()
+        {
+            var url = $"{BaseUrl}/productos/getDatosRecientesUvRedNacionalJson";
+            return await MakeRequestAsync(url, "Datos índice UV de la red nacional");
+        }
+
+        // 07 - Resumen Diario Red de Estaciones Automática
+        public async Task<object> GetDailySummaryAllStationsAsync()
+        {
+            var url = $"{BaseUrl}/productos/getResumenDiarioEmasJson";
+            return await MakeRequestAsync(url, "Resumen diario de todas las estaciones");
+        }
+
+        // 08 - Resumen Diario de una Estación Automática
+        public async Task<object> GetStationDailySummaryAsync(string stationCode)
+        {
+            var url = $"{BaseUrl}/productos/getResumenDiarioEmaJson/{stationCode}";
+            return await MakeRequestAsync(url, $"Resumen diario de la estación {stationCode}");
+        }
+
+        // 09 - Boletín Climatológico Diario de las Principales Estaciones
+        public async Task<object> GetClimatologicalBulletinAsync()
+        {
+            var url = $"{BaseUrl}/productos/getBoletinClimatologicoDiarioEstacionesPrincipalesJson";
+            return await MakeRequestAsync(url, "Boletín climatológico diario");
+        }
+
+        // 10 - Datos históricos de temperatura mensual y anual
+        public async Task<object> GetHistoricalTemperatureMonthlyAsync(string stationCode)
+        {
+            var url = $"{BaseUrl}/productos/getDatosHistoricosTemperaturaMensualAnualJson/{stationCode}";
+            return await MakeRequestAsync(url, $"Datos históricos de temperatura mensual/anual de la estación {stationCode}");
+        }
+
+        // 11 - Datos históricos de temperatura diaria
+        public async Task<object> GetHistoricalTemperatureDailyAsync(string stationCode, int year)
+        {
+            var url = $"{BaseUrl}/productos/getDatosHistoricosTemperaturaDiariaJson/{stationCode}/{year}";
+            return await MakeRequestAsync(url, $"Datos históricos de temperatura diaria de la estación {stationCode} para {year}");
+        }
+
+        // 12 - Datos históricos de Precipitación mensual y anual
+        public async Task<object> GetHistoricalPrecipitationMonthlyAsync(string stationCode)
+        {
+            var url = $"{BaseUrl}/productos/getDatosHistoricosPrecipitacionMensualAnualJson/{stationCode}";
+            return await MakeRequestAsync(url, $"Datos históricos de precipitación mensual/anual de la estación {stationCode}");
+        }
+
+        // 13 - Datos históricos de Precipitación diaria
+        public async Task<object> GetHistoricalPrecipitationDailyAsync(string stationCode, int year)
+        {
+            var url = $"{BaseUrl}/productos/getDatosHistoricosPrecipitacionDiariaJson/{stationCode}/{year}";
+            return await MakeRequestAsync(url, $"Datos históricos de precipitación diaria de la estación {stationCode} para {year}");
+        }
+
+        // 14 - Datos históricos de Presión a nivel medio del mar mensual y anual
+        public async Task<object> GetHistoricalPressureMonthlyAsync(string stationCode)
+        {
+            var url = $"{BaseUrl}/productos/getDatosHistoricosPresionMensualAnualJson/{stationCode}";
+            return await MakeRequestAsync(url, $"Datos históricos de presión mensual/anual de la estación {stationCode}");
+        }
+
+        // 15 - Datos históricos de Presión a nivel medio del mar diaria
+        public async Task<object> GetHistoricalPressureDailyAsync(string stationCode, int year)
+        {
+            var url = $"{BaseUrl}/productos/getDatosHistoricosPresionDiariaJson/{stationCode}/{year}";
+            return await MakeRequestAsync(url, $"Datos históricos de presión diaria de la estación {stationCode} para {year}");
+        }
+
+        private async Task<object> MakeRequestAsync(string url, string description)
+        {
+            try
+            {
+                _logger.LogInformation("Realizando solicitud a {Url} para {Description}", url, description);
+
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorMessage = $"Error HTTP {(int)response.StatusCode} al obtener {description}";
+                    _logger.LogError(errorMessage);
+                    return new { error = errorMessage, statusCode = (int)response.StatusCode };
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (string.IsNullOrWhiteSpace(content))
+                {
+                    var errorMessage = $"Respuesta vacía al obtener {description}";
+                    _logger.LogWarning(errorMessage);
+                    return new { error = errorMessage };
+                }
+
+                try
+                {
+                    // Intentar parsear como JSON
+                    var jsonData = JsonSerializer.Deserialize<object>(content);
+
+                    _logger.LogInformation("Datos obtenidos exitosamente para {Description}", description);
+
+                    return new
+                    {
+                        success = true,
+                        description = description,
+                        timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                        data = jsonData
+                    };
+                }
+                catch (JsonException ex)
+                {
+                    _logger.LogWarning("La respuesta no es JSON válido para {Description}: {Error}", description, ex.Message);
+
+                    return new
+                    {
+                        success = true,
+                        description = description,
+                        timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                        data = content,
+                        warning = "La respuesta no es JSON válido, se devuelve como texto"
+                    };
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                var errorMessage = $"Error de conexión al obtener {description}: {ex.Message}";
+                _logger.LogError(ex, errorMessage);
+                return new { error = errorMessage };
+            }
+            catch (TaskCanceledException ex)
+            {
+                var errorMessage = $"Timeout al obtener {description}: {ex.Message}";
+                _logger.LogError(ex, errorMessage);
+                return new { error = errorMessage };
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = $"Error inesperado al obtener {description}: {ex.Message}";
+                _logger.LogError(ex, errorMessage);
+                return new { error = errorMessage };
+            }
+        }
+    }
+}
