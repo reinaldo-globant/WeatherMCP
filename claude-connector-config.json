@@ -1,0 +1,219 @@
+{
+  "name": "WeatherMCP Chile",
+  "description": "Acceso a datos meteorológicos de Chile desde MeteoChile. Obtén información actual, histórica y pronósticos de estaciones meteorológicas en todo Chile.",
+  "base_url": "http://localhost:5175/api",
+  "endpoints": [
+    {
+      "name": "get_weather_stations",
+      "description": "Obtiene el catastro completo de estaciones meteorológicas disponibles en Chile",
+      "method": "GET",
+      "path": "/weather/stations",
+      "parameters": []
+    },
+    {
+      "name": "get_station_metadata", 
+      "description": "Obtiene metadatos detallados de una estación meteorológica específica (ubicación, altitud, etc.)",
+      "method": "GET",
+      "path": "/weather/stations/{station_code}/metadata",
+      "parameters": [
+        {
+          "name": "station_code",
+          "type": "string",
+          "required": true,
+          "description": "Código de la estación meteorológica (ej: 330001 para Arica)"
+        }
+      ]
+    },
+    {
+      "name": "get_recent_data_all_stations",
+      "description": "Obtiene datos meteorológicos recientes (últimas 12 horas) de todas las estaciones automáticas",
+      "method": "GET", 
+      "path": "/weather/stations/recent-data",
+      "parameters": []
+    },
+    {
+      "name": "get_station_recent_data",
+      "description": "Obtiene datos meteorológicos recientes (últimas 12 horas) de una estación específica",
+      "method": "GET",
+      "path": "/weather/stations/{station_code}/recent-data", 
+      "parameters": [
+        {
+          "name": "station_code",
+          "type": "string",
+          "required": true,
+          "description": "Código de la estación meteorológica"
+        }
+      ]
+    },
+    {
+      "name": "get_station_monthly_data",
+      "description": "Obtiene datos meteorológicos detallados cada 15 minutos para un mes específico de una estación",
+      "method": "GET",
+      "path": "/weather/stations/{station_code}/monthly-data/{year}/{month}",
+      "parameters": [
+        {
+          "name": "station_code", 
+          "type": "string",
+          "required": true,
+          "description": "Código de la estación meteorológica"
+        },
+        {
+          "name": "year",
+          "type": "integer", 
+          "required": true,
+          "description": "Año (ej: 2024)"
+        },
+        {
+          "name": "month",
+          "type": "integer",
+          "required": true, 
+          "description": "Mes (1-12)"
+        }
+      ]
+    },
+    {
+      "name": "get_uv_index_data",
+      "description": "Obtiene datos del índice de radiación ultravioleta de la red nacional",
+      "method": "GET",
+      "path": "/weather/uv-index",
+      "parameters": []
+    },
+    {
+      "name": "get_daily_summary_all_stations", 
+      "description": "Obtiene resumen meteorológico diario de todas las estaciones automáticas",
+      "method": "GET",
+      "path": "/weather/stations/daily-summary",
+      "parameters": []
+    },
+    {
+      "name": "get_station_daily_summary",
+      "description": "Obtiene resumen meteorológico diario de una estación específica", 
+      "method": "GET",
+      "path": "/weather/stations/{station_code}/daily-summary",
+      "parameters": [
+        {
+          "name": "station_code",
+          "type": "string", 
+          "required": true,
+          "description": "Código de la estación meteorológica"
+        }
+      ]
+    },
+    {
+      "name": "get_climatological_bulletin",
+      "description": "Obtiene el boletín climatológico diario de las principales estaciones meteorológicas",
+      "method": "GET",
+      "path": "/weather/climatological-bulletin", 
+      "parameters": []
+    },
+    {
+      "name": "get_historical_temperature_monthly",
+      "description": "Obtiene datos históricos de temperatura mensual y anual de una estación",
+      "method": "GET",
+      "path": "/historical/temperature/monthly/{station_code}",
+      "parameters": [
+        {
+          "name": "station_code",
+          "type": "string",
+          "required": true, 
+          "description": "Código de la estación meteorológica"
+        }
+      ]
+    },
+    {
+      "name": "get_historical_temperature_daily",
+      "description": "Obtiene datos históricos de temperatura diaria para un año específico",
+      "method": "GET", 
+      "path": "/historical/temperature/daily/{station_code}/{year}",
+      "parameters": [
+        {
+          "name": "station_code",
+          "type": "string",
+          "required": true,
+          "description": "Código de la estación meteorológica"
+        },
+        {
+          "name": "year", 
+          "type": "integer",
+          "required": true,
+          "description": "Año (ej: 2024)"
+        }
+      ]
+    },
+    {
+      "name": "get_historical_precipitation_monthly",
+      "description": "Obtiene datos históricos de precipitación mensual y anual",
+      "method": "GET",
+      "path": "/historical/precipitation/monthly/{station_code}",
+      "parameters": [
+        {
+          "name": "station_code", 
+          "type": "string",
+          "required": true,
+          "description": "Código de la estación meteorológica"
+        }
+      ]
+    },
+    {
+      "name": "get_historical_precipitation_daily", 
+      "description": "Obtiene datos históricos de precipitación diaria para un año específico",
+      "method": "GET",
+      "path": "/historical/precipitation/daily/{station_code}/{year}",
+      "parameters": [
+        {
+          "name": "station_code",
+          "type": "string",
+          "required": true,
+          "description": "Código de la estación meteorológica"
+        },
+        {
+          "name": "year",
+          "type": "integer", 
+          "required": true,
+          "description": "Año (ej: 2024)"
+        }
+      ]
+    },
+    {
+      "name": "get_historical_pressure_monthly",
+      "description": "Obtiene datos históricos de presión atmosférica mensual y anual",
+      "method": "GET",
+      "path": "/historical/pressure/monthly/{station_code}",
+      "parameters": [
+        {
+          "name": "station_code",
+          "type": "string", 
+          "required": true,
+          "description": "Código de la estación meteorológica"
+        }
+      ]
+    },
+    {
+      "name": "get_historical_pressure_daily",
+      "description": "Obtiene datos históricos de presión atmosférica diaria para un año específico", 
+      "method": "GET",
+      "path": "/historical/pressure/daily/{station_code}/{year}",
+      "parameters": [
+        {
+          "name": "station_code",
+          "type": "string",
+          "required": true,
+          "description": "Código de la estación meteorológica"
+        },
+        {
+          "name": "year",
+          "type": "integer",
+          "required": true,
+          "description": "Año (ej: 2024)"
+        }
+      ]
+    }
+  ],
+  "authentication": {
+    "type": "none"
+  },
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  }
+}

@@ -161,11 +161,13 @@ curl -X GET "http://localhost:5175/api/weather/stations/330001/recent-data" -H "
 curl -X GET "http://localhost:5175/api/historical/temperature/daily/330001/2024" -H "accept: application/json"
 ```
 
-### 🔌 Servidor MCP (Model Context Protocol)
+### 🔌 Integración con Claude
 
-Compatible con integraciones directas con LLMs que soporten el protocolo MCP.
+WeatherMCP se puede usar de dos formas con Claude:
 
-> 🤖 **¿Quieres usar WeatherMCP con Claude Desktop?** Ver la [Guía de Integración con Claude](MCP_CLAUDE_SETUP.md) para configuración paso a paso.
+> 🤖 **Claude Custom Connector (Recomendado)**: Ver [Guía de Custom Connector](CLAUDE_CONNECTOR_SETUP.md)
+
+> 🔧 **Claude Desktop MCP Server**: Ver [Guía de Servidor MCP](MCP_CLAUDE_SETUP.md)
 
 #### Herramientas MCP Disponibles
 
